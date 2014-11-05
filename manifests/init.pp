@@ -178,6 +178,7 @@ class ironic (
   }
 
   file { '/etc/ironic':
+    require  => Package['python-pbr'],
     ensure  => directory,
 #    owner   => 'ironic',
 #    group   => 'ironic',
@@ -190,15 +191,16 @@ class ironic (
     mode    => '0640', 
   }
 
-#  package { 'openstack-ironic-common':
-#    ensure => $package_ensure,
-#    name   => $::ironic::params::client_package,
-#  }
+  package { 'python-pbr':
+    ensure => $package_ensure,
+    name   => $::ironic::params::pbr_package,
+  }
 
   package { 'ironic-common':
     ensure => $package_ensure,
     name   => $::ironic::params::common_package_name,
   }
+
   
   Package['ironic-common'] -> Ironic_config<||>
 

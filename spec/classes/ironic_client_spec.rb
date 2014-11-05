@@ -26,15 +26,15 @@ describe 'ironic::client' do
     let :facts do
       { :osfamily => 'Debian' }
     end
-
     it { should contain_class('ironic::client') }
+    it { should contain_package('python-ironicclient') }
   end
 
   context 'on RedHat platforms' do
     let :facts do
       { :osfamily => 'RedHat' }
     end
-
     it { should contain_class('ironic::client') }
+    it { should contain_package('python-ironicclient') }
   end
 end
