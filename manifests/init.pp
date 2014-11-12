@@ -156,39 +156,22 @@ class ironic (
 
   include ironic::params
 
-
-#  group { 'ironic':
-#    name    => 'ironic',
-#    require => Package['ironic-common'],
-#  }
-
-#  user { 'ironic':
-#    name    => 'ironic',
-#    gid     => 'ironic',
-#    groups  => ['ironic'],
-#    system  => true,
-#    require => Package['ironic-common'],
-#  }
+  Package['ironic-common'] -> Ironic_config<||>
 
   File {
     require => Package['ironic-common'],
     owner   => 'root',
-#    group   => 'ironic',
     mode    => '0640',
   }
 
   file { '/etc/ironic':
     require  => Package['python-pbr'],
     ensure  => directory,
-#    owner   => 'ironic',
-#    group   => 'ironic',
     mode    => '0750',
   }
 
   file { '/etc/ironic/ironic.conf':
-#    owner   => 'ironic',
-#    group   => 'ironic',
-    mode    => '0640', 
+    mode    => '0640',
   }
 
   package { 'python-pbr':
@@ -201,15 +184,11 @@ class ironic (
     name   => $::ironic::params::common_package_name,
   }
 
-  
-  Package['ironic-common'] -> Ironic_config<||>
-
   validate_re($database_connection, '(sqlite|mysql|postgresql):\/\/(\S+:\S+@\S+\/\S+)?')
 
   case $database_connection {
     /mysql:\/\/\S+:\S+@\S+\/\S+/: {
       $database_backend_package = false
-      #require 'mysql::python'
     }
     /postgresql:\/\/\S+:\S+@\S+\/\S+/: {
       $database_backend_package = 'python-psycopg2'
@@ -254,7 +233,7 @@ class ironic (
   }
 
   Ironic_config['database/connection'] ~> Exec['ironic-dbsync']
-  
+
   exec { 'ironic-dbsync':
     command     => $::ironic::params::dbsync_command,
     path        => '/usr/bin',
@@ -301,7 +280,7 @@ class ironic (
       'DEFAULT/qpid_reconnect_interval':     value => $qpid_reconnect_interval;
     }
   }
-  
+
   if $use_syslog {
     ironic_config {
       'DEFAULT/use_syslog':           value => true;

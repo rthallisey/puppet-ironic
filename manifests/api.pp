@@ -87,9 +87,7 @@ class ironic::api (
   $admin_tenant_name = 'services',
   $admin_user        = 'ironic',
   $admin_password,
-
-  $neutron_url       = false,
-
+  $neutron_url = false,
 ) {
 
   include ironic::params
@@ -132,7 +130,7 @@ class ironic::api (
   } else {
     ironic_config { 'neutron/url': value => "${auth_protocol}://${auth_host}:9696/"; }
   }
-   
+
   if $auth_uri {
     ironic_config { 'keystone_authtoken/auth_uri': value => $auth_uri; }
   } else {
@@ -164,6 +162,5 @@ class ironic::api (
       'keystone_authtoken/auth_admin_prefix': ensure => absent;
     }
   }
-
 
 }

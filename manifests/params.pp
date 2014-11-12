@@ -34,12 +34,12 @@ class ironic::params {
       $pbr_package         = 'python-pbr'
     }
     'Debian': {
-      $common_package_name = 'openstack-ironic-common'
-      $api_service         = 'openstack-ironic-api'
-      $api_package         = 'openstack-ironic-api'
-      $conductor_service   = 'openstack-ironic-conductor'
-      $conductor_package   = 'openstack-ironic-conductor'
-      $client_package      = 'openstack-python-ironicclient'
+      $common_package_name = 'ironic-common'
+      $api_service         = 'ironic-api'
+      $api_package         = 'ironic-api'
+      $conductor_service   = 'ironic-conductor'
+      $conductor_package   = 'ironic-conductor'
+      $client_package      = 'python-ironicclient'
       $pbr_package         = 'python-pbr'
     }
     default: {
