@@ -102,7 +102,8 @@ describe 'ironic' do
         :owner   => 'root',
         :group   => 'ironic',
         :mode    => '0750',
-        :require => 'Package[ironic]'
+        :require => 'Package[ironic-common]',
+        :require => 'Package[python-pbr]'
       )
     end
 
@@ -111,12 +112,13 @@ describe 'ironic' do
         :owner   => 'root',
         :group   => 'ironic',
         :mode    => '0640',
-        :require => 'Package[ironic]'
+        :require => 'Package[ironic-common]',
+        :require => 'Package[python-pbr]'
       )
     end
 
     it 'installs ironic package' do
-      should contain_package('ironic').with(
+      should contain_package('ironic-common').with(
         :ensure => 'present',
         :name   => platform_params[:common_package_name]
       )

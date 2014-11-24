@@ -161,6 +161,7 @@ class ironic (
   File {
     require => Package['ironic-common'],
     owner   => 'root',
+    group   => 'ironic',
     mode    => '0640',
   }
 
