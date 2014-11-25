@@ -159,14 +159,13 @@ class ironic (
   Package['ironic-common'] -> Ironic_config<||>
 
   File {
-    require => Package['ironic-common'],
+    require => [Package['python-pbr'], Package['ironic-common']],
     owner   => 'root',
     group   => 'ironic',
     mode    => '0640',
   }
 
   file { '/etc/ironic':
-    require  => Package['python-pbr'],
     ensure  => directory,
     mode    => '0750',
   }
