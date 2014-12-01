@@ -182,7 +182,7 @@ class ironic (
   package { 'ironic-common':
     ensure => $package_ensure,
     name   => $::ironic::params::common_package_name,
-    requre => Package['python-pbr'],
+    require => Package['python-pbr'],
   }
 
   validate_re($database_connection, '(sqlite|mysql|postgresql):\/\/(\S+:\S+@\S+\/\S+)?')
