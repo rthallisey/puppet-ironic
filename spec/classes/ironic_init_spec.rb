@@ -102,8 +102,6 @@ describe 'ironic' do
         :owner   => 'root',
         :group   => 'ironic',
         :mode    => '0750',
-        :require => 'Package[ironic-common]',
-        :require => 'Package[python-pbr]'
       )
     end
 
@@ -112,8 +110,6 @@ describe 'ironic' do
         :owner   => 'root',
         :group   => 'ironic',
         :mode    => '0640',
-        :require => 'Package[ironic-common]',
-        :require => 'Package[python-pbr]'
       )
     end
 
@@ -121,6 +117,10 @@ describe 'ironic' do
       should contain_package('ironic-common').with(
         :ensure => 'present',
         :name   => platform_params[:common_package_name]
+      )
+      should contain_package('python-pbr').with(
+        :ensure => 'present',
+        :name   => platform_params[:pbr_package]
       )
     end
 
@@ -226,6 +226,10 @@ describe 'ironic' do
       { :common_package_name => 'ironic-common' }
     end
 
+    let :platform_params do
+      { :pbr_package => 'python-pbr' }
+    end
+
     it_configures 'ironic'
   end
 
@@ -235,7 +239,11 @@ describe 'ironic' do
     end
 
     let :platform_params do
-      { :common_package_name => 'openstack-ironic' }
+      { :common_package_name => 'openstack-ironic-common' }
+    end
+
+    let :platform_params do
+      { :pbr_package => 'python-pbr' }
     end
 
     it_configures 'ironic'

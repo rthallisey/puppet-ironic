@@ -159,7 +159,7 @@ class ironic (
   Package['ironic-common'] -> Ironic_config<||>
 
   File {
-    require => [Package['python-pbr'], Package['ironic-common']],
+    require => Package['ironic-common'],
     owner   => 'root',
     group   => 'ironic',
     mode    => '0640',
@@ -182,6 +182,7 @@ class ironic (
   package { 'ironic-common':
     ensure => $package_ensure,
     name   => $::ironic::params::common_package_name,
+    requre => Package['python-pbr'],
   }
 
   validate_re($database_connection, '(sqlite|mysql|postgresql):\/\/(\S+:\S+@\S+\/\S+)?')
