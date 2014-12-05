@@ -68,6 +68,10 @@
 #   (optional) The name of the user to create in keystone for use by the ironic services
 #   Defaults to 'ironic'
 #
+# [*neutron_url*]
+#   (optional) The Neutron URL to be used for requests from ironic
+#   Defaults to false
+#
 # [*admin_password*]
 #   (required) The password to set for the ironic admin user in keystone
 #
@@ -86,13 +90,15 @@ class ironic::api (
   $auth_version      = false,
   $admin_tenant_name = 'services',
   $admin_user        = 'ironic',
+  $neutron_url       = false,
   $admin_password,
-  $neutron_url = false,
 ) {
 
   include ironic::params
+  include ironic::policy
 
   Ironic_config<||> ~> Service['ironic-api']
+  Class['ironic::policy'] ~> Service['ironic-api']
 
   # Configure ironic.conf
   ironic_config {
@@ -103,6 +109,7 @@ class ironic::api (
 
   # Install package
   if $::ironic::params::api_package {
+    Package['ironic-api'] -> Class['ironic::policy']
     Package['ironic-api'] -> Service['ironic-api']
     Package['ironic-api'] -> Ironic_config<||>
     package { 'ironic-api':

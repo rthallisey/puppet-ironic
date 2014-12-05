@@ -65,6 +65,7 @@ describe 'ironic::api' do
       should contain_ironic_config('keystone_authtoken/admin_password').with_value(p[:admin_password])
       should contain_ironic_config('keystone_authtoken/admin_user').with_value(p[:admin_user])
       should contain_ironic_config('keystone_authtoken/auth_uri').with_value('http://127.0.0.1:5000/')
+      should contain_ironic_config('neutron/url').with_value('http://127.0.0.1:9696/')
     end
 
     context 'when overriding parameters' do

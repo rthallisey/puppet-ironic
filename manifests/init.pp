@@ -158,19 +158,18 @@ class ironic (
 
   Package['ironic-common'] -> Ironic_config<||>
 
-  File {
+  file { '/etc/ironic':
+    ensure  => directory,
     require => Package['ironic-common'],
     owner   => 'root',
     group   => 'ironic',
-    mode    => '0640',
-  }
-
-  file { '/etc/ironic':
-    ensure  => directory,
     mode    => '0750',
   }
 
   file { '/etc/ironic/ironic.conf':
+    require => Package['ironic-common'],
+    owner   => 'root',
+    group   => 'ironic',
     mode    => '0640',
   }
 
@@ -180,8 +179,8 @@ class ironic (
   }
 
   package { 'ironic-common':
-    ensure => $package_ensure,
-    name   => $::ironic::params::common_package_name,
+    ensure  => $package_ensure,
+    name    => $::ironic::params::common_package_name,
     require => Package['python-pbr'],
   }
 
