@@ -75,6 +75,13 @@
 # [*admin_password*]
 #   (required) The password to set for the ironic admin user in keystone
 #
+# [*enabled_drivers*]
+#   The back-end drivers for Ironic
+#   Defaults to agent_ssh
+#
+# [*swift_temp_url_key*]
+#  (required) The temporaty url key for Ironic to access Swift
+#
 
 class ironic::api (
   $package_ensure    = 'present',
@@ -92,6 +99,8 @@ class ironic::api (
   $admin_user        = 'ironic',
   $neutron_url       = false,
   $admin_password,
+  $swift_temp_url_key,
+  $enabled_drivers   = 'agent_ssh',
 ) {
 
   include ironic::params
@@ -102,9 +111,11 @@ class ironic::api (
 
   # Configure ironic.conf
   ironic_config {
-    'api/host_ip': value   => $host_ip;
-    'api/port': value      => $port;
-    'api/max_limit': value => $max_limit;
+    'api/host_ip':                 value => $host_ip;
+    'api/port':                    value => $port;
+    'api/max_limit':               value => $max_limit;
+    'DEFAULT/enabled_drivers':     value => $enabled_drivers;
+    'glance/swift_temp_url_key':   value => $swift_temp_url_key, secret => true;
   }
 
   # Install package
