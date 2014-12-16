@@ -90,17 +90,19 @@ class ironic::api (
   $port              = '6385',
   $max_limit         = '1000',
   $auth_host         = '127.0.0.1',
-  $auth_port         = 35357,
+  $auth_port         = '35357',
   $auth_protocol     = 'http',
   $auth_uri          = false,
   $auth_admin_prefix = false,
   $auth_version      = false,
   $admin_tenant_name = 'services',
+  $auth_url          = 'http://127.0.0.1:35357/v2.0',
   $admin_user        = 'ironic',
   $neutron_url       = false,
+  $enabled_drivers   = 'agent_ssh',
+  $swift_account     = undef,
   $admin_password,
   $swift_temp_url_key,
-  $enabled_drivers   = 'agent_ssh',
 ) {
 
   include ironic::params
@@ -109,6 +111,21 @@ class ironic::api (
   Ironic_config<||> ~> Service['ironic-api']
   Class['ironic::policy'] ~> Service['ironic-api']
 
+  if $swift_account {
+    ironic_config {
+      'glance/swift_account': value => $swift_account;
+    }
+  } else {
+    ironic_admin_tenant_id_setter {'swift_account':
+      ensure           => present,
+      tenant_name      => $admin_tenant_name,
+      auth_url         => "${auth_protocol}://${auth_host}:${auth_port}/v2.0",
+      auth_username    => $admin_user,
+      auth_password    => $admin_password,
+      auth_tenant_name => $admin_tenant_name,
+    }
+  }
+
   # Configure ironic.conf
   ironic_config {
     'api/host_ip':                 value => $host_ip;
@@ -116,6 +133,7 @@ class ironic::api (
     'api/max_limit':               value => $max_limit;
     'DEFAULT/enabled_drivers':     value => $enabled_drivers;
     'glance/swift_temp_url_key':   value => $swift_temp_url_key, secret => true;
+    'glance/swift_account':        value => $swift_account;
   }
 
   # Install package
