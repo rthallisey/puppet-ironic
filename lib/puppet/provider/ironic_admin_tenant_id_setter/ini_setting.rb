@@ -174,7 +174,7 @@ Puppet::Type.type(:ironic_admin_tenant_id_setter).provide(:ruby) do
 
     def config
         Puppet::Type.type(:ironic_config).new(
-            {:name => 'glance/swift_account', :value => "#{get_tenant_id}"}
+            {:name => 'glance/swift_account', :value => "AUTH_#{get_tenant_id}"}
         ).create
     end
 

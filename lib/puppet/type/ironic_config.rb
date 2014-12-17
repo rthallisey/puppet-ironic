@@ -39,4 +39,9 @@ Puppet::Type.newtype(:ironic_config) do
 
     defaultto false
   end
+
+  def create
+      provider.create
+  end
+
 end

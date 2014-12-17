@@ -99,7 +99,6 @@ class ironic::api (
   $admin_user        = 'ironic',
   $neutron_url       = false,
   $enabled_drivers   = 'agent_ssh',
-  $swift_account     = undef,
   $admin_password,
   $swift_temp_url_key,
 ) {
@@ -110,18 +109,14 @@ class ironic::api (
   Ironic_config<||> ~> Service['ironic-api']
   Class['ironic::policy'] ~> Service['ironic-api']
 
-  if $swift_account {
-    ironic_config {
-      'glance/swift_account': value => $swift_account;
-    }
-  } else {
-    ironic_admin_tenant_id_setter {'swift_account':
-      tenant_name      => $admin_tenant_name,
-      auth_url         => "${auth_protocol}://${auth_host}:35357/v2.0",
-      auth_username    => $admin_user,
-      auth_password    => $admin_password,
-      auth_tenant_name => $admin_tenant_name,
-    }
+  # Configures 'glance/swift_account'
+  ironic_admin_tenant_id_setter {'swift_account':
+    ensure           => present,
+    tenant_name      => $admin_tenant_name,
+    auth_url         => "${auth_protocol}://${auth_host}:35357/v2.0",
+    auth_username    => $admin_user,
+    auth_password    => $admin_password,
+    auth_tenant_name => $admin_tenant_name,
   }
 
   # Configure ironic.conf
