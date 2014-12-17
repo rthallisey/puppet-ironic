@@ -109,26 +109,6 @@ class ironic::api (
   Ironic_config<||> ~> Service['ironic-api']
   Class['ironic::policy'] ~> Service['ironic-api']
 
-  # Configures 'glance/swift_account'
-  ironic_admin_tenant_id_setter {'swift_account':
-    ensure           => present,
-    tenant_name      => $admin_tenant_name,
-    auth_url         => "${auth_protocol}://${auth_host}:35357/v2.0",
-    auth_username    => $admin_user,
-    auth_password    => $admin_password,
-    auth_tenant_name => $admin_tenant_name,
-  }
-
-  # Configure ironic.conf
-  ironic_config {
-    'api/host_ip':                 value => $host_ip;
-    'api/port':                    value => $port;
-    'api/max_limit':               value => $max_limit;
-    'DEFAULT/enabled_drivers':     value => $enabled_drivers;
-    'glance/swift_temp_url_key':   value => $swift_temp_url_key, secret => true;
-    'glance/swift_account':        value => $swift_account;
-  }
-
   # Install package
   if $::ironic::params::api_package {
     Package['ironic-api'] -> Class['ironic::policy']
@@ -152,6 +132,34 @@ class ironic::api (
     name      => $::ironic::params::api_service,
     enable    => $enabled,
     hasstatus => true,
+  }
+
+  # Configures 'glance/swift_account'
+  ironic_admin_tenant_id_setter {'swift_account':
+    ensure           => present,
+    tenant_name      => $admin_tenant_name,
+    auth_url         => "${auth_protocol}://${auth_host}:35357/v2.0",
+    auth_username    => $admin_user,
+    auth_password    => $admin_password,
+    auth_tenant_name => $admin_tenant_name,
+  }
+
+  # Configure ironic.conf
+  ironic_config {
+    'api/host_ip':                 value => $host_ip;
+    'api/port':                    value => $port;
+    'api/max_limit':               value => $max_limit;
+    'DEFAULT/enabled_drivers':     value => $enabled_drivers;
+    'glance/swift_temp_url_key':   value => $swift_temp_url_key, secret => true;
+    'glance/swift_account':        value => $swift_account;
+  }
+
+  # Post temp_url_key to swift
+  exec { 'swift-temp-url-key-post':
+    command     => "swift post -m temp-url-key:${swift_temp_url_key}",
+    path        => ['/bin', '/usr/bin'],
+    subscribe   => File['/etc/ironic/ironic.conf'],
+    refreshonly => true,
   }
 
   if $neutron_url {
