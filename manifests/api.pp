@@ -96,7 +96,6 @@ class ironic::api (
   $auth_admin_prefix = false,
   $auth_version      = false,
   $admin_tenant_name = 'services',
-  $auth_url          = 'http://127.0.0.1:35357/v2.0',
   $admin_user        = 'ironic',
   $neutron_url       = false,
   $enabled_drivers   = 'agent_ssh',
@@ -117,9 +116,8 @@ class ironic::api (
     }
   } else {
     ironic_admin_tenant_id_setter {'swift_account':
-      ensure           => present,
       tenant_name      => $admin_tenant_name,
-      auth_url         => "${auth_protocol}://${auth_host}:${auth_port}/v2.0",
+      auth_url         => "${auth_protocol}://${auth_host}:35357/v2.0",
       auth_username    => $admin_user,
       auth_password    => $admin_password,
       auth_tenant_name => $admin_tenant_name,
