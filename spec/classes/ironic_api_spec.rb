@@ -23,19 +23,17 @@ require 'spec_helper'
 describe 'ironic::api' do
 
   let :default_params do
-    { :package_ensure  => 'present',
-      :enabled         => true,
-      :port            => '6385',
-      :max_limit       => '1000',
-      :host_ip         => '0.0.0.0',
-      :admin_user      => 'ironic',
-      :enabled_drivers => 'agent_ssh',
+    { :package_ensure => 'present',
+      :enabled        => true,
+      :port           => '6385',
+      :max_limit      => '1000',
+      :host_ip        => '0.0.0.0',
+      :admin_user     => 'ironic',
     }
   end
 
   let :params do
-    { :admin_password     => 'thepassword',
-      :swift_temp_url_key => 'thepassword'}
+    { :admin_password => 'thepassword' }
   end
 
   shared_examples_for 'ironic api' do
@@ -67,8 +65,6 @@ describe 'ironic::api' do
       should contain_ironic_config('keystone_authtoken/admin_password').with_value(p[:admin_password])
       should contain_ironic_config('keystone_authtoken/admin_user').with_value(p[:admin_user])
       should contain_ironic_config('keystone_authtoken/auth_uri').with_value('http://127.0.0.1:5000/')
-      should contain_ironic_config('glance/swift_temp_url_key').with_value(p[:swift_temp_url_key])
-      should contain_ironic_config('DEFAULT/enabled_drivers').with_value(p[:enabled_drivers])
       should contain_ironic_config('neutron/url').with_value('http://127.0.0.1:9696/')
     end
 
