@@ -102,7 +102,6 @@ describe 'ironic' do
         :owner   => 'root',
         :group   => 'ironic',
         :mode    => '0750',
-        :require => 'Package[python-pbr]',
         :require => 'Package[ironic-common]'
       )
     end
